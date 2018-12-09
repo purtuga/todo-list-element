@@ -1,13 +1,32 @@
 import {ComponentElement, prop} from "@purtuga/component-element/src/index.js"
+import {Icon} from "@purtuga/common-widget-elements/src/Icon/Icon.js";
+import {
+    AttrDirective,
+    OnDirective
+} from "@purtuga/dom-data-bind/src/index.js";
+import {dataBoundTemplates} from "@purtuga/dom-data-bind/src/ElementDecorator.js";
 import {TodoInput} from "./TodoInput.js";
 
 //=============================================================
 
+Icon.define();
+
 /**
+ * Display a TodoItem
  *
  * @extends ComponentElement
+ *
+ * @fires TodoItem#check
+ * @fires TodoItem#un-check
+ * @fires TodoItem#edit
  */
-export class TodoItem extends ComponentElement {
+@dataBoundTemplates({
+    directives: [
+        AttrDirective,
+        OnDirective
+    ]
+})
+class TodoItem extends ComponentElement {
     //-------------------------------------------------------------
     //
     //                                              STATIC MEMBERS
@@ -44,21 +63,37 @@ export class TodoItem extends ComponentElement {
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  PROPS AND ATTRIBUTES  ~~~~
 
-    // FIXME: implement readonly
-    @prop({ attr: true })
+    @prop
+    data = null;
+
+    @prop({ attr: true }) // FIXME: implement readonly
     readonly = false;
 
+    @prop({ boolean: true })
+    done = false;
+
+    @prop({ attr: true })
+    tooltipEdit = "Click to Edit";
+
+    @prop({ attr: true })
+    iconSource = "boxicons";
+
+    @prop({ attr: true })
+    iconDoneName = "check-circle";
+
+    @prop({ attr: true })
+    iconNotDoneName = "circle";
+
+    @prop({ attr: true })
+    iconTrashName = "trash";
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  LIFE CYCLE HOOKS  ~~~~~
 
     // didInit(){}
     // didMount(){}
-    willRender(){
-        return this._renderDone;
-    }
+    // willRender(){}
 
     render() {
-        this._renderDone = true;
         return `
 <style>
     :host {
@@ -74,17 +109,30 @@ export class TodoItem extends ComponentElement {
     :host(:last-child) {
         margin-bottom: 0;
     }
-    
+    .content {
+        display: flex;
+    }
+    .description {
+        flex: auto;
+        flex-wrap: wrap;
+        padding: 0 var(--theme-spacing-3, 1em);
+    }
+    .clickable {
+        cursor: pointer;
+    }
 </style>
-<div _class="{ 'done': data.done }">
-    <i class="icon"
-       _on.click="console.log('click icon not done yet')"
-    ></i>
-    <span class="title"
-        _attr.title="props.tooltip"
-        _on.click="edit(item)"
-    ><slot>{{ data.title }}</slot></span>
-    <span>Actions here</span>
+<div class="content"
+    _class="{ 'done': props.done }">
+    <span class="clickable" _on.click="emit(props.done ? 'un-check' : 'check', props.data)">
+        <i-con _attr.from="props.iconSource" _attr.name="props.done ? props.iconDoneName : props.iconNotDoneName"></i-con>
+    </span>
+    <span class="description"
+        _attr.title="props.tooltipEdit"
+        _on.click="emit('edit')"
+    ><slot></slot></span>
+    <span class="clickable">
+        <i-con _attr.from="props.iconSource" _attr.name="props.iconTrashName"></i-con>
+    </span>
 </div>
 `;
     }
@@ -107,3 +155,6 @@ export class TodoItem extends ComponentElement {
 
 
 export default TodoItem;
+export {
+    TodoItem
+}

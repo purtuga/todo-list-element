@@ -1,6 +1,11 @@
 import {ComponentElement, prop} from "@purtuga/component-element/src/index.js"
 import {dataBoundTemplates} from "@purtuga/dom-data-bind/src/ElementDecorator.js";
-import {EachDirective} from "@purtuga/dom-data-bind/src/index.js";
+import {
+    EachDirective,
+    PropDirective,
+    AttrDirective,
+    OnDirective
+} from "@purtuga/dom-data-bind/src/index.js";
 import {isObject} from "@purtuga/common/src/jsutils/runtime-aliases.js";
 
 import {TodoItem} from "./TodoItem.js";
@@ -18,7 +23,7 @@ import {TodoAdd} from "./TodoAdd.js";
  * @extends ComponentElement
  */
 @dataBoundTemplates({
-    directives: [ EachDirective ]
+    directives: [ EachDirective, PropDirective, AttrDirective, OnDirective ]
 })
 class TodoList extends ComponentElement {
     //-------------------------------------------------------------
@@ -77,14 +82,12 @@ class TodoList extends ComponentElement {
 
     // didInit(){}
     // didMount(){}
-    // willRender(){}
+    // willRender(){
+    //     return !this._renderDone;
+    // }
 
     render() {
-        if (this._renderDone){
-            return;
-        }
-
-        this._renderDone = true;
+        // this._renderDone = true;
 
         const {
             TodoItem: { tagName: todoItemTagName },
@@ -102,7 +105,12 @@ class TodoList extends ComponentElement {
     }
 </style>
 <div>
-    <${ todoItemTagName } _each="todoData in props.data">{{ _isObject(todoData) ? todoData.title : todoData }}</${ todoItemTagName }>
+    <${ todoItemTagName }
+        _each="todoData in props.data"
+        _prop.data="todoData"
+        _attr.done="todoData.done"
+        _on.check="todoData.done = true, _queueUpdate()"
+        _on.un-check="todoData.done = false, _queueUpdate()">{{ _isObject(todoData) ? todoData.title : todoData }}</${ todoItemTagName }>
 </div>
 <${ todoAddTagName }></${ todoAddTagName }>
 `;

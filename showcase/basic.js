@@ -9,8 +9,9 @@ showcase("Basic Todo", function ($cntr) {
             `<todo-list _prop.data="items"></todo-list>`,
             {
                 items: [
-                    { title: "Task 1" },
-                    "task 2 (string)"
+                    { title: "Task 1", done: true },
+                    { title: "Task 2", done: false },
+                    "task 2 (string) task 2 (string) task 2 (string) task 2 (string) task 2 (string) task 2 (string) task 2 (string) task 2 (string) task 2 (string) task 2 (string) task 2 (string) task 2 (string) task 2 (string) task 2 (string) task 2 (string) "
                 ]
             },
             allDirectives
