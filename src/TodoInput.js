@@ -1,4 +1,9 @@
-import {ComponentElement} from "@purtuga/component-element/src/index.js"
+import {ComponentElement, prop} from "@purtuga/component-element/src/index.js"
+import {
+    PropDirective,
+    OnDirective
+} from "@purtuga/dom-data-bind/src/index.js";
+import {dataBoundTemplates} from "@purtuga/dom-data-bind/src/ElementDecorator.js";
 
 //=============================================================
 
@@ -6,7 +11,10 @@ import {ComponentElement} from "@purtuga/component-element/src/index.js"
  * The Todo item Input area (a textarea)
  * @extends ComponentElement
  */
-export class TodoInput extends ComponentElement {
+@dataBoundTemplates({
+    directives: [PropDirective, OnDirective]
+})
+class TodoInput extends ComponentElement {
     //-------------------------------------------------------------
     //
     //                                              STATIC MEMBERS
@@ -34,6 +42,8 @@ export class TodoInput extends ComponentElement {
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  PROPS AND ATTRIBUTES  ~~~~
 
+    @prop()
+    value = "";
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  LIFE CYCLE HOOKS  ~~~~~
 
@@ -48,11 +58,11 @@ export class TodoInput extends ComponentElement {
         display: block;
         position: relative;
         box-sizing: border-box;
-        font-family: var(--theme-font-family, "Arial");
-        color: var(--theme-color-fg, "black");
+        font-family: var(--theme-font-family, Arial);
+        color: var(--theme-color-fg, black);
     }
 </style>
-<textarea></textarea>`;
+<textarea _prop.value="props.value" _on.input="emit('change', this.value)"></textarea>`;
     }
 
     // didRender() {}
@@ -73,3 +83,6 @@ export class TodoInput extends ComponentElement {
 
 
 export default TodoInput;
+export {
+    TodoInput
+}

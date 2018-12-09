@@ -82,9 +82,7 @@ class TodoList extends ComponentElement {
 
     // didInit(){}
     // didMount(){}
-    // willRender(){
-    //     return !this._renderDone;
-    // }
+    // willRender(){ }
 
     render() {
         // this._renderDone = true;
@@ -109,6 +107,10 @@ class TodoList extends ComponentElement {
         _each="todoData in props.data"
         _prop.data="todoData"
         _attr.done="todoData.done"
+        _attr.edit="todoData.edit"
+        _on.edit="todoData.edit = true, _queueUpdate()"
+        _on.edit-done="todoData.edit = false, todoData.title = $ev.detail, _queueUpdate()"
+        _on.edit-cancel="todoData.edit = false, _queueUpdate()"
         _on.check="todoData.done = true, _queueUpdate()"
         _on.un-check="todoData.done = false, _queueUpdate()">{{ _isObject(todoData) ? todoData.title : todoData }}</${ todoItemTagName }>
 </div>
