@@ -1,13 +1,26 @@
-import {ComponentElement} from "@purtuga/component-element"
+import {ComponentElement, prop} from "@purtuga/component-element/src/index.js"
+import {dataBoundTemplates} from "@purtuga/dom-data-bind/src/ElementDecorator.js";
+import {EachDirective} from "@purtuga/dom-data-bind/src/index.js";
+import {isObject} from "@purtuga/common/src/jsutils/runtime-aliases.js";
+
 import {TodoItem} from "./TodoItem.js";
+import {TodoAdd} from "./TodoAdd.js";
 
 //=============================================================
 
 /**
+ * A container that displays a set of todo items.
+ *
+ * __Supported CSS Vars__
+ *
+ * TODO: document css vars
  *
  * @extends ComponentElement
  */
-export class TodoList extends ComponentElement {
+@dataBoundTemplates({
+    directives: [ EachDirective ]
+})
+class TodoList extends ComponentElement {
     //-------------------------------------------------------------
     //
     //                                              STATIC MEMBERS
@@ -23,6 +36,12 @@ export class TodoList extends ComponentElement {
      */
     static TodoItem = TodoItem;
 
+    /**
+     * The Todo Add area Constructor (`CustomElement)
+     * @type {TodoAdd}
+     */
+    static TodoAdd = TodoAdd;
+
     // static get delayDestroy() {}
     // static get useShadow() {}
     // static get shadowMode() {}
@@ -30,7 +49,11 @@ export class TodoList extends ComponentElement {
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ STATIC METHODS ~~~~~
 
-    // static define(name) {}
+    static define(name) {
+        super.define(name);
+        this.TodoAdd.define();
+        this.TodoItem.define();
+    }
 
 
     //-------------------------------------------------------------
@@ -41,6 +64,14 @@ export class TodoList extends ComponentElement {
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  PROPS AND ATTRIBUTES  ~~~~
 
+    /**
+     * The list of todo items. By default, it support an array of strings or
+     * array of objects, with each object having at least a `title` attribute
+     * @type {Array<String|Object>}
+     */
+    @prop
+    data = [];
+
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  LIFE CYCLE HOOKS  ~~~~~
 
@@ -49,15 +80,32 @@ export class TodoList extends ComponentElement {
     // willRender(){}
 
     render() {
+        if (this._renderDone){
+            return;
+        }
+
+        this._renderDone = true;
+
+        const {
+            TodoItem: { tagName: todoItemTagName },
+            TodoAdd: { tagName: todoAddTagName }
+        } = this.constructor;
+
         return `
 <style>
     :host {
         display: block;
         position: relative;
         box-sizing: border-box;
+        font-family: var(--theme-font-family, "Arial");
+        color: var(--theme-color-fg, "black");
     }
 </style>
-<slot>My TodoList</slot>`;
+<div>
+    <${ todoItemTagName } _each="todoData in props.data">{{ _isObject(todoData) ? todoData.title : todoData }}</${ todoItemTagName }>
+</div>
+<${ todoAddTagName }></${ todoAddTagName }>
+`;
     }
 
     // didRender() {}
@@ -66,7 +114,9 @@ export class TodoList extends ComponentElement {
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  INSTANCE METHODS  ~~~~
 
-    // Other instance methods
+    _isObject(obj) {
+        return isObject(obj);
+    }
 
 }
 
@@ -80,5 +130,7 @@ export class TodoList extends ComponentElement {
 //------------------------------------------ OTHER EXPORTS ----
 export default TodoList;
 export {
-    TodoItem
+    TodoList,
+    TodoItem,
+    TodoAdd
 }

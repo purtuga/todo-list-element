@@ -55,6 +55,7 @@
         "@purtuga/project-showcase": "^2.0.0"
     },
     "dependencies": {
+        "@purtuga/common": "^3.6.0",
         "@purtuga/component-element": "^2.1.0",
         "@purtuga/dom-data-bind": "^4.2.0"
     }
