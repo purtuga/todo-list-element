@@ -1,6 +1,7 @@
 import {ComponentElement, prop} from "@purtuga/component-element/src/index.js"
 import {
     PropDirective,
+    AttrDirective,
     OnDirective
 } from "@purtuga/dom-data-bind/src/index.js";
 import {dataBoundTemplates} from "@purtuga/dom-data-bind/src/ElementDecorator.js";
@@ -12,7 +13,7 @@ import {dataBoundTemplates} from "@purtuga/dom-data-bind/src/ElementDecorator.js
  * @extends ComponentElement
  */
 @dataBoundTemplates({
-    directives: [PropDirective, OnDirective]
+    directives: [PropDirective, AttrDirective, OnDirective]
 })
 class TodoInput extends ComponentElement {
     //-------------------------------------------------------------
@@ -45,6 +46,9 @@ class TodoInput extends ComponentElement {
     @prop()
     value = "";
 
+    @prop({ attr: true })
+    placeholder = "Enter value...";
+
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  LIFE CYCLE HOOKS  ~~~~~
 
     // didInit(){}
@@ -59,10 +63,35 @@ class TodoInput extends ComponentElement {
         position: relative;
         box-sizing: border-box;
         font-family: var(--theme-font-family, Arial);
+        font-size: var(--theme-font-size, 16px);
         color: var(--theme-color-fg, black);
+        min-height: 1.5em;
+        border: var(--theme-border-light, 1px solid #eeeeee);
+    }
+    :host(:focus-within) {
+        border: var(--theme-border, 1px solid lightgrey);
+    }
+    input {
+        font-size: var(--theme-font-size, 16px);
+        box-sizing: border-box;
+        width: 100%;
+        height: 100%;
+        border: none;
+        resize: none;
+        outline: none;
+        padding: var(--theme-spacing-3, 0.5em);
+    }
+    textarea:focus {
+        border: none;
+        outline: none;
     }
 </style>
-<textarea _prop.value="props.value" _on.input="emit('change', this.value)"></textarea>`;
+<input
+    type="text"
+    _prop.value="props.value"
+    _on.input="emit('change', $ev.target.value)"
+    _attr.placeholder="props.placeholder" />
+`;
     }
 
     // didRender() {}

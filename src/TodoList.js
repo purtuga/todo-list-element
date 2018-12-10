@@ -99,18 +99,25 @@ class TodoList extends ComponentElement {
         position: relative;
         box-sizing: border-box;
         font-family: var(--theme-font-family, "Arial");
-        color: var(--theme-color-fg, "black");
+        color: var(--theme-color-fg, black);
+    }
+    .body {
+        min-height: 3em;
+    }
+    .body:empty:before {
+        content: "No Items";
     }
 </style>
-<div>
+<div class="body">
     <${ todoItemTagName }
-        _each="todoData in props.data"
+        _each="(todoData, i) in props.data"
         _prop.data="todoData"
         _attr.done="todoData.done"
         _attr.edit="todoData.edit"
         _on.edit="todoData.edit = true, _queueUpdate()"
         _on.edit-done="todoData.edit = false, todoData.title = $ev.detail, _queueUpdate()"
         _on.edit-cancel="todoData.edit = false, _queueUpdate()"
+        _on.delete="props.data.splice(i, 1), _queueUpdate()"
         _on.check="todoData.done = true, _queueUpdate()"
         _on.un-check="todoData.done = false, _queueUpdate()">{{ _isObject(todoData) ? todoData.title : todoData }}</${ todoItemTagName }>
 </div>

@@ -29,6 +29,7 @@ Icon.define();
  * @fires TodoItem#edit
  * @fires TodoItem#edit-done
  * @fires TodoItem#edit-cancel
+ * @fires TodoItem#delete
  */
 @dataBoundTemplates({ directives })
 class TodoItem extends ComponentElement {
@@ -61,8 +62,11 @@ class TodoItem extends ComponentElement {
     _attr.title="props.tooltipEdit"
     _on.click="emit('edit')"
 ><slot></slot></span>
-<span class="clickable">
-    <i-con _attr.from="props.iconSource" _attr.name="props.iconTrashName"></i-con>
+<span>
+    <i-con class="clickable"
+        _attr.from="props.iconSource"
+        _attr.name="props.iconTrashName"
+        _on.click="emit('delete')"></i-con>
 </span>`, directives);
 
 
@@ -75,10 +79,12 @@ class TodoItem extends ComponentElement {
 <span>
     <span>
         <i-con 
+            class="clickable"
             _attr.from="props.iconSource" 
             _attr.name="props.iconSaveName"
             _on.click="_emitSave()"></i-con>
         <i-con 
+            class="clickable"
             _attr.from="props.iconSource" 
             _attr.name="props.iconCancelName"
             _on.click="_emitCancel()"></i-con>
@@ -223,10 +229,13 @@ class TodoItem extends ComponentElement {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  INSTANCE METHODS  ~~~~
 
     _getView() {
+        this._newDescription = this._getDescription();
+
         if (!this.props.edit) {
             this._removeDocEv();
             return this.constructor.displayView;
         }
+
         setTimeout(this._setupDocEv, 200);
         return this.constructor.editView;
     }
