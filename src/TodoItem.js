@@ -1,5 +1,6 @@
 import {ComponentElement, prop, bind} from "@purtuga/component-element/src/index.js"
 import {Icon} from "@purtuga/common-widget-elements/src/Icon/Icon.js";
+import {ConfirmAction} from "@purtuga/common-widget-elements/src/ConfirmAction/ConfirmAction.js";
 import {
     AttrDirective,
     PropDirective,
@@ -17,6 +18,7 @@ const directives = [
     PropDirective,
     OnDirective
 ];
+ConfirmAction.define();
 Icon.define();
 
 /**
@@ -63,10 +65,14 @@ class TodoItem extends ComponentElement {
     _on.click="emit('edit')"
 ><slot></slot></span>
 <span>
-    <i-con class="clickable"
-        _attr.from="props.iconSource"
-        _attr.name="props.iconTrashName"
-        _on.click="emit('delete')"></i-con>
+    <confirm-action confirm-align-right _on.confirmed="emit('delete')">
+        <i-con class="clickable"
+            _attr.from="props.iconSource"
+            _attr.name="props.iconTrashName"></i-con>
+        <span slot="message">{{ props.confirmText }}</span>
+        <span slot="cancel">{{ props.confirmCancelText }}</span>
+        <span slot="confirm">{{ props.confirmProceedText }}</span>
+    </confirm-action>
 </span>`, directives);
 
 
@@ -126,6 +132,15 @@ class TodoItem extends ComponentElement {
 
     @prop({ attr: true })
     tooltipEdit = "Click to Edit";
+
+    @prop({ attr: true })
+    confirmText = "Remove Item?";
+
+    @prop({ attr: true })
+    confirmCancelText = "No";
+
+    @prop({ attr: true })
+    confirmProceedText = "Yes";
 
     @prop({ attr: true })
     iconSource = "boxicons";
