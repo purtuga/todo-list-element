@@ -1,5 +1,5 @@
 {
-    "name": "todo-list-element",
+    "name": "@purtuga/todo-list-element",
     "version": "0.9.0",
     "description": "A (yet another) todo list built as a Custom Element.",
     "main": "src/index.js",
