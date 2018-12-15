@@ -1,5 +1,9 @@
-import {ComponentElement} from "@purtuga/component-element/src/index.js"
+import {ComponentElement, prop} from "@purtuga/component-element/src/index.js"
+import {dataBoundTemplates} from "@purtuga/dom-data-bind/src/ElementDecorator.js";
+import {OnDirective, PropDirective} from "@purtuga/dom-data-bind/src/index.js";
 import {TodoInput} from "./TodoInput.js";
+import {TodoAction} from "./TodoAction.js";
+import showOnHoverStyles from "./styles/show-on-hover.toString.css"
 
 //=============================================================
 
@@ -7,7 +11,10 @@ import {TodoInput} from "./TodoInput.js";
  *
  * @extends ComponentElement
  */
-export class TodoAdd extends ComponentElement {
+@dataBoundTemplates({
+    directives: [PropDirective, OnDirective]
+})
+class TodoAdd extends ComponentElement {
     //-------------------------------------------------------------
     //
     //                                              STATIC MEMBERS
@@ -33,6 +40,7 @@ export class TodoAdd extends ComponentElement {
     static define(name) {
         super.define(name);
         this.TodoInput.define();
+        TodoAction.define(); // TODO: should TodoAction be exposed as Static prop
     }
 
 
@@ -44,6 +52,9 @@ export class TodoAdd extends ComponentElement {
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  PROPS AND ATTRIBUTES  ~~~~
 
+    @prop() value = "";
+
+    @prop() placeholder="";
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  LIFE CYCLE HOOKS  ~~~~~
 
@@ -60,11 +71,33 @@ export class TodoAdd extends ComponentElement {
         display: block;
         position: relative;
         box-sizing: border-box;
-        font-family: var(--theme-font-family, "Arial");
-        color: var(--theme-color-fg, "black");
+        font-family: var(--theme-font-family, Arial);
+        color: var(--theme-color-fg, black);
+        border: var(--theme-border-light, 1px solid lightgrey);
+        border-radius: var(--theme-border-radius, 6px);
+        overflow: hidden;
+    }
+    ${ showOnHoverStyles }
+    div {
+        display: flex;
+    }
+    ${todoInputTagName} {
+        margin: var(--theme-spacing-1, 0.2em);
+        flex: auto;
+    }
+    todo-action {
+        padding: 0 var(--theme-spacing-2, 0.5em);
+        display: flex;
+        align-items: center;
     }
 </style>
-<${ todoInputTagName }></${ todoInputTagName }>`;
+<div>
+    <${ todoInputTagName } _on.change="_handleNewValue($ev)" _on.keyup.enter="_handleAdd()" _prop.placeholder="props.placeholder" _prop.value="value" style="border:none;"></${ todoInputTagName }>
+    <todo-action _on.click="_handleAdd()" class="show-on-hover">
+        <i-con from="boxicons" name="plus-circle">Add</i-con>
+    </todo-action>
+</div>
+`;
     }
 
     // didRender() {}
@@ -73,8 +106,24 @@ export class TodoAdd extends ComponentElement {
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  INSTANCE METHODS  ~~~~
 
-    // Other instance methods
+    _handleNewValue(ev) {
+        this.value = ev.detail;
+    }
 
+    _handleAdd() {
+        this.value = this.value ? this.value.trim() : "";
+
+        if (this.value) {
+            this.emit("add", this.value);
+            this.value = "";
+            this._queueUpdate();
+            this.focus();
+        }
+    }
+
+    focus() {
+        this.$(this.constructor.TodoInput.tagName).focus();
+    }
 }
 
 //-------------------------------------------------------------
@@ -85,3 +134,6 @@ export class TodoAdd extends ComponentElement {
 
 
 export default TodoAdd;
+export {
+    TodoAdd
+}

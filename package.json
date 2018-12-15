@@ -57,7 +57,7 @@
     "dependencies": {
         "@purtuga/common": "^3.6.0",
         "@purtuga/common-widget-elements": "^2.0.0",
-        "@purtuga/component-element": "^2.1.2",
-        "@purtuga/dom-data-bind": "^4.3.0"
+        "@purtuga/component-element": "^2.2.0",
+        "@purtuga/dom-data-bind": "^4.4.0"
     }
 }

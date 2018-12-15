@@ -10,7 +10,9 @@ import {view} from "@purtuga/dom-data-bind/src/index.js";
 import {dataBoundTemplates} from "@purtuga/dom-data-bind/src/ElementDecorator.js";
 import {domAddEventListener} from "@purtuga/common/src/domutils/domAddEventListener.js";
 import {doc} from "@purtuga/common/src/jsutils/runtime-aliases.js";
+import showOnHoverStyles from "./styles/show-on-hover.toString.css";
 import {TodoInput} from "./TodoInput.js";
+import {TodoAction} from "./TodoAction.js";
 
 //=============================================================
 const directives = [
@@ -50,52 +52,47 @@ class TodoItem extends ComponentElement {
      */
     static TodoInput = TodoInput;
 
-
+    /**
+     * The View Template for showing a Todo Item
+     * @type {Template}
+     */
     static displayView = view(`
-<span 
-    class="clickable" 
-    _on.click="emit(props.done ? 'un-check' : 'check', props.data)">
-    <i-con 
+<todo-action _on.click="emit(props.done ? 'un-check' : 'check', props.data)">
+    <i-con
         class="checkmark"
         _attr.from="props.iconSource" 
-        _attr.name="props.done ? props.iconDoneName : props.iconNotDoneName""></i-con>
+        _attr.name="props.done ? props.iconDoneName : props.iconNotDoneName"></i-con>
+</todo-action>
+<span class="description" _attr.title="props.tooltipEdit" _on.click="emit('edit')">
+    <slot></slot>
 </span>
-<span class="description"
-    _attr.title="props.tooltipEdit"
-    _on.click="emit('edit')"
-><slot></slot></span>
-<span>
-    <confirm-action confirm-align-right _on.confirmed="emit('delete')">
-        <i-con class="clickable"
-            _attr.from="props.iconSource"
-            _attr.name="props.iconTrashName"></i-con>
-        <span slot="message">{{ props.confirmText }}</span>
-        <span slot="cancel">{{ props.confirmCancelText }}</span>
-        <span slot="confirm">{{ props.confirmProceedText }}</span>
-    </confirm-action>
-</span>`, directives);
+<confirm-action confirm-align-right _on.confirmed="emit('delete')" class="show-on-hover">
+    <todo-action>
+        <i-con _attr.from="props.iconSource" _attr.name="props.iconTrashName"></i-con>
+    </todo-action>
+    <span slot="message">{{ props.confirmText }}</span>
+    <span slot="cancel">{{ props.confirmCancelText }}</span>
+    <span slot="confirm">{{ props.confirmProceedText }}</span>
+</confirm-action>
+`, directives);
 
 
+    /**
+     * The View Template for Editing a Todo Item
+     * @type {Template}
+     */
     static editView = view(`
 <span class="description">
     <${ this.TodoInput.tagName } 
         _prop.value="_getDescription()"
         _on.change="_storeNewDescription($ev)"></${this.TodoInput.tagName}>
 </span>
-<span>
-    <span>
-        <i-con 
-            class="clickable"
-            _attr.from="props.iconSource" 
-            _attr.name="props.iconSaveName"
-            _on.click="_emitSave()"></i-con>
-        <i-con 
-            class="clickable"
-            _attr.from="props.iconSource" 
-            _attr.name="props.iconCancelName"
-            _on.click="_emitCancel()"></i-con>
-    </span>
-</span>
+<todo-action _on.click="_emitSave()">
+    <i-con _attr.from="props.iconSource" _attr.name="props.iconSaveName"></i-con>
+</todo-action>
+<todo-action _on.click="_emitCancel()">
+    <i-con _attr.from="props.iconSource" _attr.name="props.iconCancelName"></i-con>
+</todo-action>
 `, directives);
 
     // static get delayDestroy() {}
@@ -108,6 +105,7 @@ class TodoItem extends ComponentElement {
     static define(name) {
         super.define(name);
         this.TodoInput.define();
+        TodoAction.define(); // TODO: should it be exposed as class static?
     }
 
     //-------------------------------------------------------------
@@ -184,15 +182,12 @@ class TodoItem extends ComponentElement {
         border: var(--theme-border-light, 1px solid lightgrey);
         border-radius: var(--theme-border-radius, 6px);
         margin-bottom: var(--theme-spacing-1, 0.2em);
-        
         transition: border 0.5s;
-    }
-    :host(:hover) {
-        border-color: var(--theme-border-color, grey);
     }
     :host(:last-child) {
         margin-bottom: 0;
     }
+    ${ showOnHoverStyles }
     .content {
         display: flex;
     }
@@ -207,28 +202,18 @@ class TodoItem extends ComponentElement {
     :host([done]:hover) .description {
         text-decoration: none;
     }
-
     .clickable {
         cursor: pointer;
     }
-
-    i-con {
-        fill: var(--theme-color-3, lightgrey);
-        color: var(--theme-color-3, lightgrey);
-        transition: color 0.3s, fill 0.3s;
+    :host(:hover) {
+        border-color: var(--theme-border-color, grey);
     }
     :host([done]) i-con.checkmark {
         fill: var(--theme-color-accent-success-4, green);
         color: var(--theme-color-accent-success-4, green);
     }
-    :host(:not([done]):hover) i-con {
-        fill: var(--theme-color-7, darkgrey);
-        color: var(--theme-color-7, darkgrey);
-    }
-
 </style>
 <div class="content"
-    _class="{ 'done': props.done }"
     _on.click="$ev[_id] = this">
     {{ _getView() }}
 </div>
@@ -258,6 +243,8 @@ class TodoItem extends ComponentElement {
     @bind
     _setupDocEv() {
         if (!this._docEv && this.props.edit) {
+            this.$(this.constructor.TodoInput.tagName).focus();
+
             // FIXME: documetn this event
             this._docEv = domAddEventListener(doc, "click", event => {
                 if (!event[this._id] || !this.$ui.contains(event[this._id])) {

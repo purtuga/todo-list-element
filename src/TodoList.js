@@ -107,6 +107,9 @@ class TodoList extends ComponentElement {
     .body:empty:before {
         content: "No Items";
     }
+    ${todoAddTagName} {
+        margin-top: var(--theme-spacing, 0.5em);
+    }
 </style>
 <div class="body">
     <${ todoItemTagName }
@@ -121,7 +124,7 @@ class TodoList extends ComponentElement {
         _on.check="todoData.done = true, _queueUpdate()"
         _on.un-check="todoData.done = false, _queueUpdate()">{{ _isObject(todoData) ? todoData.title : todoData }}</${ todoItemTagName }>
 </div>
-<${ todoAddTagName }></${ todoAddTagName }>
+<${ todoAddTagName } _on.add="_addNew($ev)"></${ todoAddTagName }>
 `;
     }
 
@@ -133,6 +136,12 @@ class TodoList extends ComponentElement {
 
     _isObject(obj) {
         return isObject(obj);
+    }
+
+    _addNew(event) {
+        const newItem = { title: event.detail };
+        this.props.data.push(newItem);
+        this._queueUpdate();
     }
 
 }

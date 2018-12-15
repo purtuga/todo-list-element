@@ -1,22 +1,14 @@
-import {ComponentElement, prop} from "@purtuga/component-element/src/index.js"
-import {
-    PropDirective,
-    AttrDirective,
-    OnDirective
-} from "@purtuga/dom-data-bind/src/index.js";
-import {dataBoundTemplates} from "@purtuga/dom-data-bind/src/ElementDecorator.js";
+import {ComponentElement} from "@purtuga/component-element/src/index.js"
 
 //=============================================================
 
 /**
- * The Todo item Input area (a textarea)
+ * Wraps an action. Action is initially faded and then emphasized on hover
  * @extends ComponentElement
- * @fires TodoInput#change
+ * @property {String} [invisible]
+ *  Only as HTML Attribute. Makes action hidden and only visible on hover.
  */
-@dataBoundTemplates({
-    directives: [PropDirective, AttrDirective, OnDirective]
-})
-class TodoInput extends ComponentElement {
+class TodoAction extends ComponentElement {
     //-------------------------------------------------------------
     //
     //                                              STATIC MEMBERS
@@ -24,7 +16,7 @@ class TodoInput extends ComponentElement {
     //-------------------------------------------------------------
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ STATIC PROPERTIES ~~~~~
-    static tagName = "todo-input";
+    static tagName = "todo-action";
 
     // static get delayDestroy() {}
     // static get useShadow() {}
@@ -44,11 +36,6 @@ class TodoInput extends ComponentElement {
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  PROPS AND ATTRIBUTES  ~~~~
 
-    @prop()
-    value = "";
-
-    @prop({ attr: true })
-    placeholder = "Enter value...";
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  LIFE CYCLE HOOKS  ~~~~~
 
@@ -60,34 +47,25 @@ class TodoInput extends ComponentElement {
         return `
 <style>
     :host {
-        display: block;
+        display: inline-block;
         position: relative;
         box-sizing: border-box;
         font-family: var(--theme-font-family, Arial);
-        font-size: var(--theme-font-size, 16px);
-        color: var(--theme-color-fg, black);
-        min-height: 1.5em;
-        border: var(--theme-border-light, 1px solid #eeeeee);
+        fill: var(--theme-color-3, lightgrey);
+        color: var(--theme-color-3, lightgrey);
+        transition: all 0.3s;
+        cursor: pointer;
     }
-    :host(:focus-within) {
-        border: var(--theme-border, 1px solid lightgrey);
-    }
-    input {
-        font-size: var(--theme-font-size, 16px);
-        box-sizing: border-box;
-        width: 100%;
-        height: 100%;
-        border: none;
-        resize: none;
-        outline: none;
-        padding: var(--theme-spacing-3, 0.5em);
+    :host([invisible]) {
+        opacity: 0;
+    } 
+    :host(:hover) {
+        fill: var(--theme-color-7, darkgrey);
+        color: var(--theme-color-7, darkgrey);
+        opacity: 1;
     }
 </style>
-<input
-    type="text"
-    _prop.value="props.value"
-    _on.input="emit('change', $ev.target.value)"
-    _attr.placeholder="props.placeholder" />
+<slot></slot>
 `;
     }
 
@@ -97,9 +75,7 @@ class TodoInput extends ComponentElement {
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  INSTANCE METHODS  ~~~~
 
-    focus() {
-        this.$("input").focus();
-    }
+    // Other instance methods
 
 }
 
@@ -109,8 +85,10 @@ class TodoInput extends ComponentElement {
 //
 //-------------------------------------------------------------
 
+// Private functions here...
 
-export default TodoInput;
+//------------------------------------------ EXPORTS ----------
+export default TodoAction;
 export {
-    TodoInput
+    TodoAction
 }
