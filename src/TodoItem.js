@@ -3,6 +3,7 @@ import hostStyles from "@purtuga/component-element/src/styles/host.toString.css"
 import {Icon} from "@purtuga/common-widget-elements/src/Icon/Icon.js";
 import {ConfirmAction} from "@purtuga/common-widget-elements/src/ConfirmAction/ConfirmAction.js";
 import {
+    IfDirective,
     AttrDirective,
     PropDirective,
     OnDirective
@@ -17,6 +18,7 @@ import {TodoAction} from "./TodoAction.js";
 
 //=============================================================
 const directives = [
+    IfDirective,
     AttrDirective,
     PropDirective,
     OnDirective
@@ -58,16 +60,16 @@ class TodoItem extends ComponentElement {
      * @type {Template}
      */
     static displayView = view(`
-<todo-action _on.click="emit(props.done ? 'un-check' : 'check', props.data)">
+<todo-action _on.click="_emitCheckUncheck()" _attr.class="props.noCheck ? 'disabled' : ''">
     <i-con
         class="checkmark"
         _attr.from="props.iconSource" 
         _attr.name="props.done ? props.iconDoneName : props.iconNotDoneName"></i-con>
 </todo-action>
-<span class="description" _attr.title="props.tooltipEdit" _on.click="emit('edit')">
+<span class="description" _attr.title="props.noEdit ? '' : props.tooltipEdit" _on.click="_emitEdit()">
     <slot></slot>
 </span>
-<confirm-action confirm-align-right _on.confirmed="emit('delete')">
+<confirm-action _if="!props.noDelete" confirm-align-right _on.confirmed="emit('delete')">
     <todo-action class="show-on-hover">
         <i-con _attr.from="props.iconSource" _attr.name="props.iconTrashName"></i-con>
     </todo-action>
@@ -121,44 +123,40 @@ class TodoItem extends ComponentElement {
     @prop
     data = null;
 
-    @prop({ attr: true }) // FIXME: implement readonly
-    readonly = false;
+    /**
+     * Show the edit UI. Will only work if `noEdit` is false
+     * @type {boolean}
+     */
+    @prop({ boolean: true }) edit = false;
 
-    @prop({ boolean: true }) // FIXME: implement readonly
-    edit = false;
+    @prop({ boolean: true }) noEdit = false;
 
-    @prop({ boolean: true })
-    done = false;
+    @prop({ boolean: true }) noCheck = false;
 
-    @prop({ attr: true })
-    tooltipEdit = "Click to Edit";
+    @prop({ boolean: true }) noDelete = false;
 
-    @prop({ attr: true })
-    confirmText = "Remove Item?";
+    @prop({ boolean: true }) done = false;
 
-    @prop({ attr: true })
-    confirmCancelText = "No";
+    @prop({ attr: true }) tooltipEdit = "Click to Edit";
 
-    @prop({ attr: true })
-    confirmProceedText = "Yes";
+    @prop({ attr: true }) confirmText = "Remove Item?";
 
-    @prop({ attr: true })
-    iconSource = "boxicons";
+    @prop({ attr: true }) confirmCancelText = "No";
 
-    @prop({ attr: true })
-    iconDoneName = "check-circle";
+    @prop({ attr: true }) confirmProceedText = "Yes";
 
-    @prop({ attr: true })
-    iconNotDoneName = "circle";
+    @prop({ attr: true }) iconSource = "boxicons";
 
-    @prop({ attr: true })
-    iconTrashName = "trash";
+    @prop({ attr: true }) iconDoneName = "check-circle";
 
-    @prop({ attr: true })
-    iconSaveName = "save";
+    @prop({ attr: true }) iconNotDoneName = "circle";
 
-    @prop({ attr: true })
-    iconCancelName = "reset";
+    @prop({ attr: true }) iconTrashName = "trash";
+
+    @prop({ attr: true }) iconSaveName = "save";
+
+    @prop({ attr: true }) iconCancelName = "reset";
+
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  LIFE CYCLE HOOKS  ~~~~~
 
@@ -211,6 +209,10 @@ class TodoItem extends ComponentElement {
         fill: var(--theme-color-accent-success-4, green);
         color: var(--theme-color-accent-success-4, green);
     }
+    .disabled {
+        cursor: auto;
+        pointer-events: none;
+    }
 </style>
 <div class="content" _on.click="$ev[_id] = this">
     {{ _getView() }}
@@ -229,7 +231,7 @@ class TodoItem extends ComponentElement {
     _getView() {
         this._newDescription = this._getDescription();
 
-        if (!this.props.edit) {
+        if (this.props.noEdit || !this.props.edit) {
             this._removeDocEv();
             return this.constructor.displayView;
         }
@@ -266,6 +268,18 @@ class TodoItem extends ComponentElement {
         this._newDescription = event.detail;
     }
 
+    _emitEdit() {
+        if (!this.props.noEdit) {
+            this.emit('edit');
+        }
+    }
+
+    _emitCheckUncheck() {
+        if (!this.props.noCheck) {
+            this.emit(this.props.done ? 'un-check' : 'check', this.props.data);
+        }
+    }
+
     _emitSave() {
         // FIXME: document this event
         this.emit("edit-done", this._newDescription);
@@ -286,6 +300,8 @@ class TodoItem extends ComponentElement {
 //-------------------------------------------------------------
 
 
+
+//================================================ EXPORTS ====
 export default TodoItem;
 export {
     TodoItem

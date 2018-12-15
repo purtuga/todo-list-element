@@ -3,6 +3,7 @@ import "../src/import.js"
 
 // import other showcases now so that they register themselves.
 import "./basic.js"
+import "./options.js"
 
 //========================================================
 registerElements();

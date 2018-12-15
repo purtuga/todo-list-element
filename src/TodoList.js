@@ -78,7 +78,19 @@ class TodoList extends ComponentElement {
      */
     @prop data = [];
 
+    /**
+     * The message that should be shown when there are no items
+     * @type {string}
+     */
     @prop({ attr: true }) emptyMsg = "No Items";
+
+    @prop({ attr: true, boolean: true}) noAdd = false;
+
+    @prop({ attr: true, boolean: true}) noEdit = false;
+
+    @prop({ attr: true, boolean: true}) noCheck = false;
+
+    @prop({ attr: true, boolean: true}) noDelete = false;
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  LIFE CYCLE HOOKS  ~~~~~
 
@@ -114,6 +126,9 @@ class TodoList extends ComponentElement {
     <div _if="!props.data.length">{{ props.emptyMsg }}</div>
     <${ todoItemTagName }
         _each="(todoData, i) in props.data"
+        _attr.no-edit="props.noEdit"
+        _attr.no-check="props.noCheck"
+        _attr.no-delete="props.noDelete"
         _prop.data="todoData"
         _attr.done="todoData.done"
         _attr.edit="todoData.edit"
@@ -124,7 +139,7 @@ class TodoList extends ComponentElement {
         _on.check="todoData.done = true, _queueUpdate()"
         _on.un-check="todoData.done = false, _queueUpdate()">{{ _isObject(todoData) ? todoData.title : todoData }}</${ todoItemTagName }>
 </div>
-<${ todoAddTagName } _on.add="_addNew($ev)"></${ todoAddTagName }>
+<${ todoAddTagName } _if="!props.noAdd" _on.add="_addNew($ev)"></${ todoAddTagName }>
 `;
     }
 
