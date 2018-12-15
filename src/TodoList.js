@@ -23,6 +23,8 @@ import {TodoAdd} from "./TodoAdd.js";
  * TODO: document css vars
  *
  * @extends ComponentElement
+ *
+ * @fires TodoList#data-change
  */
 @dataBoundTemplates({
     directives: [ EachDirective, IfDirective, PropDirective, AttrDirective, OnDirective ]
@@ -108,10 +110,11 @@ class TodoList extends ComponentElement {
 
         return `
 <style>
-    ${ hostStyles }
+    ${hostStyles}
     :host {
         display: block;
         padding: var(--theme-spacing, 0.5em);
+        border: var(--theme-border-light, 1px solid, #ececec);
         box-shadow: var(--them--e-box-shadow-s, 0 8px 10px 1px rgba(0,0,0,0.14));
         border-radius: var(--theme-border-radius, 5px);
     }
@@ -124,7 +127,7 @@ class TodoList extends ComponentElement {
 </style>
 <div class="body">
     <div _if="!props.data.length">{{ props.emptyMsg }}</div>
-    <${ todoItemTagName }
+    <${todoItemTagName}
         _each="(todoData, i) in props.data"
         _attr.no-edit="props.noEdit"
         _attr.no-check="props.noCheck"
@@ -132,14 +135,14 @@ class TodoList extends ComponentElement {
         _prop.data="todoData"
         _attr.done="todoData.done"
         _attr.edit="todoData.edit"
-        _on.edit="todoData.edit = true, _queueUpdate()"
-        _on.edit-done="todoData.edit = false, todoData.title = $ev.detail, _queueUpdate()"
-        _on.edit-cancel="todoData.edit = false, _queueUpdate()"
-        _on.delete="props.data.splice(i, 1), _queueUpdate()"
-        _on.check="todoData.done = true, _queueUpdate()"
-        _on.un-check="todoData.done = false, _queueUpdate()">{{ _isObject(todoData) ? todoData.title : todoData }}</${ todoItemTagName }>
+        _on.item-edit="todoData.edit = true, _queueUpdate()"
+        _on.item-edit-done="_handleEditDone($ev, todoData, i)"
+        _on.item-edit-cancel="todoData.edit = false, _queueUpdate()"
+        _on.item-delete="_handleDelete($ev, todoData, i)"
+        _on.item-check="todoData.done = true, _queueUpdate()"
+        _on.item-un-check="todoData.done = false, _queueUpdate()">{{ _isObject(todoData) ? todoData.title : todoData }}</${todoItemTagName}>
 </div>
-<${ todoAddTagName } _if="!props.noAdd" _on.add="_addNew($ev)"></${ todoAddTagName }>
+<${todoAddTagName} _if="!props.noAdd" _on.add="_addNew($ev)"></${todoAddTagName}>
 `;
     }
 
@@ -157,6 +160,23 @@ class TodoList extends ComponentElement {
         const newItem = { title: event.detail };
         this.props.data.push(newItem);
         this._queueUpdate();
+        this.emit("data-change");
+    }
+
+    _handleEditDone(event, todoData) {
+        todoData.edit = false;
+        todoData.title = event.detail;
+        this._queueUpdate();
+        /**
+         * @event TodoList#data-change
+         */
+        this.emit("data-change");
+    }
+
+    _handleDelete(event, todoData, i) {
+        this.props.data.splice(i, 1);
+        this._queueUpdate();
+        this.emit("data-change");
     }
 }
 

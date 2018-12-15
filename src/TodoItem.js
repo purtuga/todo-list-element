@@ -31,12 +31,12 @@ Icon.define();
  *
  * @extends ComponentElement
  *
- * @fires TodoItem#check
- * @fires TodoItem#un-check
- * @fires TodoItem#edit
- * @fires TodoItem#edit-done
- * @fires TodoItem#edit-cancel
- * @fires TodoItem#delete
+ * @fires TodoItem#item-check
+ * @fires TodoItem#item-un-check
+ * @fires TodoItem#item-edit
+ * @fires TodoItem#item-edit-done
+ * @fires TodoItem#item-edit-cancel
+ * @fires TodoItem#item-delete
  */
 @dataBoundTemplates({ directives })
 class TodoItem extends ComponentElement {
@@ -69,7 +69,7 @@ class TodoItem extends ComponentElement {
 <span class="description" _attr.title="props.noEdit ? '' : props.tooltipEdit" _on.click="_emitEdit()">
     <slot></slot>
 </span>
-<confirm-action _if="!props.noDelete" confirm-align-right _on.confirmed="emit('delete')">
+<confirm-action _if="!props.noDelete" confirm-align-right _on.confirmed="emit('item-delete')">
     <todo-action class="show-on-hover">
         <i-con _attr.from="props.iconSource" _attr.name="props.iconTrashName"></i-con>
     </todo-action>
@@ -270,25 +270,25 @@ class TodoItem extends ComponentElement {
 
     _emitEdit() {
         if (!this.props.noEdit) {
-            this.emit('edit');
+            this.emit('item-edit');
         }
     }
 
     _emitCheckUncheck() {
         if (!this.props.noCheck) {
-            this.emit(this.props.done ? 'un-check' : 'check', this.props.data);
+            this.emit(this.props.done ? 'item-un-check' : 'item-check', this.props.data);
         }
     }
 
     _emitSave() {
         // FIXME: document this event
-        this.emit("edit-done", this._newDescription);
+        this.emit("item-edit-done", this._newDescription);
         this._removeDocEv();
     }
 
     _emitCancel() {
         // FIXME: document this event
-        this.emit("edit-cancel");
+        this.emit("item-edit-cancel");
         this._removeDocEv();
     }
 }

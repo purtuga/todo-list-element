@@ -2,8 +2,9 @@ import {showcase, registerElements} from "@purtuga/project-showcase";
 import "../src/import.js"
 
 // import other showcases now so that they register themselves.
-import "./basic.js"
-import "./options.js"
+import "./basic-showcase.js"
+import "./props-showcase.js"
+import "./events-showcase.js"
 
 //========================================================
 registerElements();
