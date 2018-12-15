@@ -1,4 +1,5 @@
-import {ComponentElement, prop} from "@purtuga/component-element/src/index.js"
+import {ComponentElement, prop} from "@purtuga/component-element/src/index.js";
+import hostStyles from "@purtuga/component-element/src/styles/host.toString.css";
 import {
     PropDirective,
     AttrDirective,
@@ -59,13 +60,9 @@ class TodoInput extends ComponentElement {
     render() {
         return `
 <style>
+    ${ hostStyles }
     :host {
         display: block;
-        position: relative;
-        box-sizing: border-box;
-        font-family: var(--theme-font-family, Arial);
-        font-size: var(--theme-font-size, 16px);
-        color: var(--theme-color-fg, black);
         min-height: 1.5em;
         border: var(--theme-border-light, 1px solid #eeeeee);
     }

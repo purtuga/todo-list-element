@@ -1,4 +1,5 @@
 import {ComponentElement, prop, bind} from "@purtuga/component-element/src/index.js"
+import hostStyles from "@purtuga/component-element/src/styles/host.toString.css"
 import {Icon} from "@purtuga/common-widget-elements/src/Icon/Icon.js";
 import {ConfirmAction} from "@purtuga/common-widget-elements/src/ConfirmAction/ConfirmAction.js";
 import {
@@ -85,7 +86,8 @@ class TodoItem extends ComponentElement {
 <span class="description">
     <${ this.TodoInput.tagName } 
         _prop.value="_getDescription()"
-        _on.change="_storeNewDescription($ev)"></${this.TodoInput.tagName}>
+        _on.change="_storeNewDescription($ev)"
+        _on.keyup.enter="_emitSave()"></${this.TodoInput.tagName}>
 </span>
 <todo-action _on.click="_emitSave()">
     <i-con _attr.from="props.iconSource" _attr.name="props.iconSaveName"></i-con>
@@ -172,12 +174,9 @@ class TodoItem extends ComponentElement {
     render() {
         return `
 <style>
+    ${ hostStyles }
     :host {
         display: block;
-        position: relative;
-        box-sizing: border-box;
-        font-family: var(--theme-font-family, Arial);
-        color: var(--theme-color-fg, black);
         padding: var(--theme-spacing-2, 0.5em);
         border: var(--theme-border-light, 1px solid lightgrey);
         border-radius: var(--theme-border-radius, 6px);

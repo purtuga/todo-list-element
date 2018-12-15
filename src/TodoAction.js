@@ -1,4 +1,5 @@
 import {ComponentElement} from "@purtuga/component-element/src/index.js"
+import hostStyles from "@purtuga/component-element/src/styles/host.toString.css"
 
 //=============================================================
 
@@ -46,11 +47,8 @@ class TodoAction extends ComponentElement {
     render() {
         return `
 <style>
+    ${ hostStyles }
     :host {
-        display: inline-block;
-        position: relative;
-        box-sizing: border-box;
-        font-family: var(--theme-font-family, Arial);
         fill: var(--theme-color-3, lightgrey);
         color: var(--theme-color-3, lightgrey);
         transition: all 0.3s;

@@ -1,4 +1,5 @@
 import {ComponentElement, prop} from "@purtuga/component-element/src/index.js"
+import hostStyles from "@purtuga/component-element/src/styles/host.toString.css"
 import {dataBoundTemplates} from "@purtuga/dom-data-bind/src/ElementDecorator.js";
 import {
     EachDirective,
@@ -94,12 +95,9 @@ class TodoList extends ComponentElement {
 
         return `
 <style>
+    ${ hostStyles }
     :host {
         display: block;
-        position: relative;
-        box-sizing: border-box;
-        font-family: var(--theme-font-family, "Arial");
-        color: var(--theme-color-fg, black);
     }
     .body {
         min-height: 3em;
