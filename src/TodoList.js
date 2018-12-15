@@ -3,6 +3,7 @@ import hostStyles from "@purtuga/component-element/src/styles/host.toString.css"
 import {dataBoundTemplates} from "@purtuga/dom-data-bind/src/ElementDecorator.js";
 import {
     EachDirective,
+    IfDirective,
     PropDirective,
     AttrDirective,
     OnDirective
@@ -24,7 +25,7 @@ import {TodoAdd} from "./TodoAdd.js";
  * @extends ComponentElement
  */
 @dataBoundTemplates({
-    directives: [ EachDirective, PropDirective, AttrDirective, OnDirective ]
+    directives: [ EachDirective, IfDirective, PropDirective, AttrDirective, OnDirective ]
 })
 class TodoList extends ComponentElement {
     //-------------------------------------------------------------
@@ -75,9 +76,9 @@ class TodoList extends ComponentElement {
      * array of objects, with each object having at least a `title` attribute
      * @type {Array<String|Object>}
      */
-    @prop
-    data = [];
+    @prop data = [];
 
+    @prop({ attr: true }) emptyMsg = "No Items";
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  LIFE CYCLE HOOKS  ~~~~~
 
@@ -98,18 +99,19 @@ class TodoList extends ComponentElement {
     ${ hostStyles }
     :host {
         display: block;
+        padding: var(--theme-spacing, 0.5em);
+        box-shadow: var(--them--e-box-shadow-s, 0 8px 10px 1px rgba(0,0,0,0.14));
+        border-radius: var(--theme-border-radius, 5px);
     }
     .body {
         min-height: 3em;
     }
-    .body:empty:before {
-        content: "No Items";
-    }
     ${todoAddTagName} {
-        margin-top: var(--theme-spacing, 0.5em);
+        margin-top: var(--theme-spacing-5, 1em);
     }
 </style>
 <div class="body">
+    <div _if="!props.data.length">{{ props.emptyMsg }}</div>
     <${ todoItemTagName }
         _each="(todoData, i) in props.data"
         _prop.data="todoData"
@@ -141,7 +143,6 @@ class TodoList extends ComponentElement {
         this.props.data.push(newItem);
         this._queueUpdate();
     }
-
 }
 
 //-------------------------------------------------------------

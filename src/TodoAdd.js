@@ -82,6 +82,7 @@ class TodoAdd extends ComponentElement {
     ${todoInputTagName} {
         margin: var(--theme-spacing-1, 0.2em);
         flex: auto;
+        border: none;
     }
     todo-action {
         padding: 0 var(--theme-spacing-2, 0.5em);
@@ -90,7 +91,12 @@ class TodoAdd extends ComponentElement {
     }
 </style>
 <div>
-    <${ todoInputTagName } _on.change="_handleNewValue($ev)" _on.keyup.enter="_handleAdd()" _prop.placeholder="props.placeholder" _prop.value="value" style="border:none;"></${ todoInputTagName }>
+    <${ todoInputTagName }
+        _on.change="_handleNewValue($ev)"
+        _on.keyup.enter="_handleAdd()"
+        _on.keyup.esc="props.value = ''"
+        _prop.placeholder="props.placeholder"
+        _prop.value="value"></${ todoInputTagName }>
     <todo-action _on.click="_handleAdd()" class="show-on-hover">
         <i-con from="boxicons" name="plus-circle">Add</i-con>
     </todo-action>

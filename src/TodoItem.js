@@ -67,8 +67,8 @@ class TodoItem extends ComponentElement {
 <span class="description" _attr.title="props.tooltipEdit" _on.click="emit('edit')">
     <slot></slot>
 </span>
-<confirm-action confirm-align-right _on.confirmed="emit('delete')" class="show-on-hover">
-    <todo-action>
+<confirm-action confirm-align-right _on.confirmed="emit('delete')">
+    <todo-action class="show-on-hover">
         <i-con _attr.from="props.iconSource" _attr.name="props.iconTrashName"></i-con>
     </todo-action>
     <span slot="message">{{ props.confirmText }}</span>
@@ -212,8 +212,7 @@ class TodoItem extends ComponentElement {
         color: var(--theme-color-accent-success-4, green);
     }
 </style>
-<div class="content"
-    _on.click="$ev[_id] = this">
+<div class="content" _on.click="$ev[_id] = this">
     {{ _getView() }}
 </div>
 `;
@@ -244,7 +243,6 @@ class TodoItem extends ComponentElement {
         if (!this._docEv && this.props.edit) {
             this.$(this.constructor.TodoInput.tagName).focus();
 
-            // FIXME: documetn this event
             this._docEv = domAddEventListener(doc, "click", event => {
                 if (!event[this._id] || !this.$ui.contains(event[this._id])) {
                     this._emitSave();
@@ -269,11 +267,13 @@ class TodoItem extends ComponentElement {
     }
 
     _emitSave() {
+        // FIXME: document this event
         this.emit("edit-done", this._newDescription);
         this._removeDocEv();
     }
 
     _emitCancel() {
+        // FIXME: document this event
         this.emit("edit-cancel");
         this._removeDocEv();
     }
