@@ -3,7 +3,7 @@
     "version": "0.9.0",
     "description": "A (yet another) todo list built as a Custom Element.",
     "main": "src/index.js",
-    "module": "dist/todo-list-element.esm.min.js",
+    "module": "src/index.js",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
         "serve": "webpack-dev-server --config node_modules/@purtuga/project-base/configs/webpack.config.js --progress --hot --color --entry ./my.dev/index.js",

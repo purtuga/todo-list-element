@@ -48,7 +48,6 @@ showcase({name: "Events", group: "Todo List"},function ($cntr) {
     );
 
 
-
     showcase({name: "Events when in readonly", group: "Todo List"},function ($cntr) {
         $cntr.style.padding = "0 0 5em";
         let count = 1;
@@ -69,6 +68,7 @@ showcase({name: "Events", group: "Todo List"},function ($cntr) {
     >
     <div style="width: 50%;">
         <todo-list _prop.data="items" no-add no-edit no-check no-delete></todo-list>
+        <p>Should emit no <code>todo-list</code> events, but regular browser events would still act normally (ex. <code>click</code>)</p>
     </div>
     <div id="log" style="box-sizing: border-box;width: 47%;margin-left: 1%; height: ${window.innerHeight - 200}px; overflow: auto"><div></div></div>
 </div>

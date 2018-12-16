@@ -116,6 +116,7 @@ class TodoList extends ComponentElement {
         padding: var(--theme-spacing, 0.5em);
         border: var(--theme-border-light, 1px solid, #ececec);
         box-shadow: var(--them--e-box-shadow-s, 0 8px 10px 1px rgba(0,0,0,0.14));
+        border: var(--theme-border-light, 1px solid #efefef);
         border-radius: var(--theme-border-radius, 5px);
     }
     .body {
