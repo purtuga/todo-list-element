@@ -1,10 +1,10 @@
 import {ComponentElement, prop} from "@purtuga/component-element/src/index.js"
-import hostStyles from "@purtuga/component-element/src/styles/host.toString.css"
+import hostStyles from "@purtuga/component-element/src/styles/host.css?inline"
 import {dataBoundTemplates} from "@purtuga/dom-data-bind/src/ElementDecorator.js";
 import {OnDirective, PropDirective} from "@purtuga/dom-data-bind/src/index.js";
 import {TodoInput} from "./TodoInput.js";
 import {TodoAction} from "./TodoAction.js";
-import showOnHoverStyles from "./styles/show-on-hover.toString.css"
+import showOnHoverStyles from "./styles/show-on-hover.css?inline"
 
 //=============================================================
 

@@ -1,5 +1,5 @@
-import {showcase} from "@purtuga/project-showcase";
-import {render, allDirectives} from "@purtuga/dom-data-bind/src";
+import {showcase} from "@purtuga/project-showcase/src/index.js";
+import {render, allDirectives} from "@purtuga/dom-data-bind/src/index.js";
 
 //==============================================================
 

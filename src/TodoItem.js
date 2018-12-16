@@ -1,5 +1,5 @@
 import {ComponentElement, prop, bind} from "@purtuga/component-element/src/index.js"
-import hostStyles from "@purtuga/component-element/src/styles/host.toString.css"
+import hostStyles from "@purtuga/component-element/src/styles/host.css?inline"
 import {Icon} from "@purtuga/common-widget-elements/src/Icon/Icon.js";
 import {ConfirmAction} from "@purtuga/common-widget-elements/src/ConfirmAction/ConfirmAction.js";
 import {
@@ -12,7 +12,7 @@ import {view} from "@purtuga/dom-data-bind/src/index.js";
 import {dataBoundTemplates} from "@purtuga/dom-data-bind/src/ElementDecorator.js";
 import {domAddEventListener} from "@purtuga/common/src/domutils/domAddEventListener.js";
 import {doc} from "@purtuga/common/src/jsutils/runtime-aliases.js";
-import showOnHoverStyles from "./styles/show-on-hover.toString.css";
+import showOnHoverStyles from "./styles/show-on-hover.css?inline";
 import {TodoInput} from "./TodoInput.js";
 import {TodoAction} from "./TodoAction.js";
 

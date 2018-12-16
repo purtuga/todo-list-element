@@ -51,13 +51,13 @@
     },
     "homepage": "https://github.com/purtuga/todo-list-element#readme",
     "devDependencies": {
-        "@purtuga/project-base": "^2.2.0",
+        "@purtuga/project-base": "^2.4.1",
         "@purtuga/project-showcase": "^2.0.0"
     },
     "dependencies": {
         "@purtuga/common": "^3.6.0",
-        "@purtuga/common-widget-elements": "^2.0.0",
-        "@purtuga/component-element": "^2.2.0",
+        "@purtuga/common-widget-elements": "^2.2.0",
+        "@purtuga/component-element": "^2.3.0",
         "@purtuga/dom-data-bind": "^4.4.0"
     }
 }

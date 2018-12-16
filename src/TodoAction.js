@@ -1,5 +1,5 @@
 import {ComponentElement} from "@purtuga/component-element/src/index.js"
-import hostStyles from "@purtuga/component-element/src/styles/host.toString.css"
+import hostStyles from "@purtuga/component-element/src/styles/host.css?inline"
 
 //=============================================================
 
